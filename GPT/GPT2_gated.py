@@ -295,10 +295,10 @@ class GPT2(nn.Module):
         if targets == None:
           loss = None
         else:
-          B, T, C = logits.shape
+          B, T, C = logits.shape # logit(p) = ln( p / ( 1 - p ) )
           logits = logits.view(B*T,C)
           targets = targets.view(B*T)
-          loss = F.cross_entropy(logits,targets)
+          loss = F.cross_entropy(logits,targets) # H( P, Q ) = -0.9 * log( 0.8 ) - 0.1 * log( 0.2 ) = 0.311, the lower the better matching
         return logits, loss
 
     def generate(self, idx, max_new_tokens):

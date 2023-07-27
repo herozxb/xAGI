@@ -42,6 +42,8 @@ class Embedder:
                     
         self.embed_fns = embed_fns
         self.out_dim = out_dim
+        #print(embed_fns) # sin( x * freq ), cos( x * freq )
+        #print(out_dim) # out_dim = 63
         
     def embed(self, inputs):
         return torch.cat([fn(inputs) for fn in self.embed_fns], -1)
