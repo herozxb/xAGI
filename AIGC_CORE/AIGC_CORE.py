@@ -25,8 +25,14 @@ class Autoencoder(nn.Module):
             nn.Linear(64, input_dim)
         )
 
-    def forward(self, x):
+    def forward(self, x, condition):
         encoded = self.encoder(x)
+        if condition == 1:
+            print("=============latent_space===============")
+            print(encoded[:,0].shape)
+            
+            encoded[:,0] = 0
+            
         decoded = self.decoder(encoded)
         return decoded
 
@@ -48,7 +54,7 @@ optimizer = optim.Adam(autoencoder.parameters(), lr=0.001)
 num_epochs = 10000
 for epoch in range(num_epochs):
     # Forward pass
-    outputs = autoencoder(X_tensor)
+    outputs = autoencoder(X_tensor,0)
     loss = criterion(outputs, X_tensor)
 
     # Backward pass and optimization
@@ -61,24 +67,30 @@ for epoch in range(num_epochs):
         print(f'Epoch [{epoch + 1}/{num_epochs}], Loss: {loss.item():.4f}')
 
 
-X_2, _ = make_blobs(n_samples=300, centers=5, cluster_std=1.0, random_state=42)
+X_2, _ = make_blobs(n_samples=300, centers=7, cluster_std=0.5, random_state=42)
 X_tensor_2 = torch.tensor(X_2, dtype=torch.float32)
 
 # Generate new data using the trained autoencoder
 with torch.no_grad():
-    generated_data = autoencoder(X_tensor_2).numpy()
+    generated_data = autoencoder(X_tensor_2,1).numpy()
     #generated_data = autoencoder(X_tensor).numpy()
 
 # Plot original and generated data
 plt.figure(figsize=(10, 5))
 
-plt.subplot(1, 2, 1)
-plt.scatter(X[:, 0], X[:, 1], c='blue', label='Original Data', alpha=0.5)
+plt.subplot(1, 3, 1)
+plt.scatter(X[:, 0], X[:, 1], c='blue', label='Training Data', alpha=0.5)
+plt.title('Training Data')
+plt.xlabel('Feature 1')
+plt.ylabel('Feature 2')
+
+plt.subplot(1, 3, 2)
+plt.scatter(X_2[:, 0], X_2[:, 1], c='green', label='Original Data', alpha=0.5)
 plt.title('Original Data')
 plt.xlabel('Feature 1')
 plt.ylabel('Feature 2')
 
-plt.subplot(1, 2, 2)
+plt.subplot(1, 3, 3)
 plt.scatter(generated_data[:, 0], generated_data[:, 1], c='red', label='Generated Data', alpha=0.5)
 plt.title('Generated Data')
 plt.xlabel('Feature 1')
