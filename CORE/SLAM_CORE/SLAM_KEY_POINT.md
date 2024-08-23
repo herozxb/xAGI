@@ -27,3 +27,4 @@ what is i
 # 9.4 	observation function r = D*v + H*delta_x
 # 9.5	arg_max_log( N( delta_x ) * N( D*v | delta_x ) ) = arg_min_g( delta_x ) = || r - H * delta_x || ^ 2 + || (“boxminus”) + j^-1 * delta_x|| ^ 2
 # 9.6	d( 1/2 * ( D*v - H*delta_x )^T * R^-1 * ( D*v - H*delta_x ) ) / d ( delta_x ) = H^T * R^-1 ( D*v - H*delta_x ) = 0
+# 9.7 	Voxelmap ( || d - H * (“boxminus”) ||_R )^2, R is scale, and it is the weight of every least square  
