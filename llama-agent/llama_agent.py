@@ -1,15 +1,17 @@
+import httpx
 import ollama
-from transformers import AutoModelForCausalLM, AutoTokenizer
 import re
 
+
 #"content": "Write a Python show a web page with just 1 image from web url = 'https://www.google.com/images/logo.gif', make the picture in the center of page, and add a input area and a botton follow it",
+
 
 response = ollama.chat(
     model="llama3.1:8b",
     messages=[
         {
             "role": "user",
-            "content": "Write a Python show a pyfiglet running hello world!!!, happy everyday!!!, xOS!!!, wonder land!!!",
+            "content": "Write a Python to show a rotating 3D flower in real movetion",
         },
     ],
 )
