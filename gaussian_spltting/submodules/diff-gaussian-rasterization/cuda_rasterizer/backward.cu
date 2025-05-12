@@ -314,6 +314,13 @@ __global__ void computeCov2DCUDA(int P,
 		// e.g., dL / da = dL / d_conic_a * d_conic_a / d_a
 		
 		// 2D Covariance (cov2D): Stored as a 2×2 matrix with entries [a, b; b, c].
+		
+		// dL/da = dL/ dconic_A * dconic_A / da + dL/ dconic_B * dconic_B / da + dL/ dconic_C * dconic_C / da
+		// dl/da = dL_dconic.x  * dconic_A / da + dL_dconic.y  * dconic_A / da + dL_dconic.z  * dconic_A / da
+		
+		// conic = [ dconic_A, dconic_B ]	dconic_A = c/(ac-b^2) dconic_B = b/(ac-b^2) dconic_B = a/(ac-b^2) 
+		//         [ dconic_B, dconic_C ]
+		
 		dL_da = denom2inv * (-c * c * dL_dconic.x + 2 * b * c * dL_dconic.y + (denom - a * c) * dL_dconic.z);
 		dL_dc = denom2inv * (-a * a * dL_dconic.z + 2 * a * b * dL_dconic.y + (denom - a * c) * dL_dconic.x);
 		dL_db = denom2inv * 2 * (b * c * dL_dconic.x - (denom + 2 * b * b) * dL_dconic.y + a * b * dL_dconic.z);
@@ -339,7 +346,7 @@ __global__ void computeCov2DCUDA(int P,
 	{
 		for (int i = 0; i < 6; i++)
 			dL_dcov[6 * idx + i] = 0;
-	}
+	}0
 
 	// Gradients of loss w.r.t. upper 2x3 portion of intermediate matrix T (upper 2x3 portion of intermediate matrix T  is P )  
 	// cov2D = transpose(T) * transpose(Vrk) * T;
@@ -665,6 +672,12 @@ renderCUDA(
 			{
 				const float c = collected_colors[ch * BLOCK_SIZE + j];
 				
+				
+				// [KEY] of differentialable render
+				// get the color of render by function
+				// I ( x^ ) = alpha_1 * C_1 + alpha_2 * ( 1 - alpha_1 ) * C_2 + alpha_3 * ( 1 - alpha_1 ) * ( 1 - alpha_2 ) * C_3 + alpha_4 * ( 1 - alpha_1 ) * ( 1 - alpha_2 ) * ( 1 - alpha_3 ) * C_4 + ...
+				
+				
 				// Update last color (to be used in the next iteration)
 				accum_rec[ch] = last_alpha * last_color[ch] + (1.f - last_alpha) * accum_rec[ch];
 				last_color[ch] = c;
@@ -678,6 +691,22 @@ renderCUDA(
 				
 				atomicAdd(&(dL_dcolors[global_id * C + ch]), dchannel_dcolor * dL_dchannel);
 			}
+			
+			
+			
+			//[Gaussian j]
+			//|
+			//|-- Compute alpha_j and color_j
+			//|
+			//|-- Update accumulated color C_acc
+			//|
+			//|-- Compute gradient w.r.t alpha_j
+			//|       	dL_dalpha += (c_j - C_acc) * dL_dpixel
+			//|
+			//|-- Compute gradient w.r.t color_j
+			//		dL_dcolors[j] += alpha_j * T * dL_dpixel
+			
+			
 			
 			dL_dalpha *= T;
 			
