@@ -39,7 +39,7 @@ val_data   = data[n:]
 # =====================================
 batch_size   = 8
 block_size   = 512
-max_iters    = 5000
+max_iters    = 50000
 eval_interval= 500
 learning_rate= 3e-4
 device       = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -91,6 +91,27 @@ class Head(nn.Module):
         self.register_buffer('tril', torch.tril(torch.ones(block_size,block_size)))
         self.dropout = nn.Dropout(dropout)
         self.gate = GateLayer(n_embd, head_size)
+        
+        
+    # tokens = ["I", "see", "a", "fox", ",", "down", "on", "you"]
+    # so T = 8
+    
+    # x.shape == (B, T, C)  # here B=1, T=8, C=n_embd
+    # so
+    # x[0,6,:]  # is the embedding for the 7th token "on"
+    # x[0,7,:]  # is the embedding for the 8th token "you"
+    
+    # x = self.gate(x)         # still (1,8,C)
+    # k = self.key(x)          # (1,8,head_size)
+    # q = self.query(x)        # (1,8,head_size)
+    # v = self.value(x)        # (1,8,head_size)
+    
+    # Concretely:
+
+    # k[0,6,:] is the key vector for “on”
+    # k[0,7,:] is the key vector for “you”
+    # q[0,7,:] is the query vector for “you”
+    
     def forward(self, x):
         B,T,C = x.shape
         x = self.gate(x)
@@ -213,7 +234,7 @@ for m, name in parameters_to_prune:
 # =====================================
 # 6. Fine-tune the pruned model
 # =====================================
-finetune_iters = 5000
+finetune_iters = 50000
 optimizer = optim.AdamW(model.parameters(), lr=1e-4)
 
 total, zeros = 0, 0
