@@ -7,7 +7,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 import time
 
 # ——— CONFIG —————————————————————————————————————————————
-model_path   = "/Users/xibozhang/.cache/modelscope/hub/models/LLM-Research/Meta-Llama-3___1-8B"  # your local checkpoint
+model_path   = "/home/deep/.cache/modelscope/hub/models/LLM-Research/Meta-Llama-3.1-8B"  # your local checkpoint
 device       = torch.device("cpu")
 # ————————————————————————————————————————————————————————————
 
@@ -138,7 +138,7 @@ print(f"Thresholded MLP avg forward: {t_thresh*1000:.2f} ms")
 
 # 1) Reload tokenizer (same as before)
 tokenizer = AutoTokenizer.from_pretrained(
-    "/Users/xibozhang/.cache/modelscope/hub/models/LLM-Research/Meta-Llama-3___1-8B",
+    "/home/deep/.cache/modelscope/hub/models/LLM-Research/Meta-Llama-3.1-8B",
     use_fast=False
 )
 
