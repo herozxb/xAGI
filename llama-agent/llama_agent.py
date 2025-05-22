@@ -1,6 +1,9 @@
 import httpx
-import ollama
 import re
+import os
+os.environ.pop("HTTP_PROXY", None)
+os.environ.pop("HTTPS_PROXY", None)
+import ollama
 
 
 #"content": "Write a Python show a web page with just 1 image from web url = 'https://www.google.com/images/logo.gif', make the picture in the center of page, and add a input area and a botton follow it",

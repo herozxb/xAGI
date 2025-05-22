@@ -38,13 +38,16 @@ tok = AutoTokenizer.from_pretrained(
     "llama3.1-structured-pruned-hf", use_fast=False
 )
 
-# quick test
-prompt = "Help me split the bill among my friends!"
-ids = tok(prompt, return_tensors="pt").to(model.device)
-start = time.time()
-with torch.no_grad():
-    out = model.generate(**ids, max_new_tokens=500)
-print("==========================output==============================")
-print(time.time() - start)
-print(tok.decode(out[0], skip_special_tokens=True))
+while 1:
+    # quick test
+    prompt = "Help me split the bill among my friends!"
+    ids = tok(prompt, return_tensors="pt").to(model.device)
+    start = time.time()
+    with torch.no_grad():
+        out = model.generate(**ids, max_new_tokens=500)
+    print("==========================output==============================")
+    print(time.time() - start)
+    print(tok.decode(out[0], skip_special_tokens=True))
+    
+    input()
 

@@ -13,3 +13,5 @@ accelerate launch --cpu --num_processes 1 QLoRA.py
 # 2 GPU training
 pip install transformers==4.46.0
 trl 0.17.0
+
+pip install --index-url https://download.pytorch.org/whl/cu124  torch==2.6.0+cu124 torchvision==0.21.0+cu124 torchaudio==2.6.0+cu124
