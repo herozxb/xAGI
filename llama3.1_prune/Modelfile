@@ -1,0 +1,3 @@
+FROM llama3:8b
+PARAMETER num_ctx 4096
+ADAPTER ./outputs/checkpoint-1000/Llama3.1-Structured-Pruned-Hf-7.1B-F16.gguf  
